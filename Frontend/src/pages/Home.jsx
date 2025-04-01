@@ -5,14 +5,18 @@ import gsap from 'gsap';
 import 'remixicon/fonts/remixicon.css'
 import LocationSearchPanel from '../components/LocationSearchPanel';
 import VehiclePanel from '../components/VehiclePanel';
+import ConfirmRide from '../components/ConfirmRide';
 
 const Home = () => {
   const [pickup, setPickup] = useState('')
 const [destination, setDestination] = useState('')
 const [panelOpen,setPanelOpen] = useState(false)
 const vehiclePanelRef = useRef(null)
+const confirmRidePanelRef =useRef(null)
 const panelRef = useRef(null)
 const panelCloseRef = useRef(null)
+const [vehiclePanel,setVehiclePanel] = useState(false)
+const [confirmRidePanel, setConfirmRidePanel] = useState(false)
 
   const submitHandler = (e) => {  
     e.preventDefault()
@@ -39,6 +43,31 @@ const panelCloseRef = useRef(null)
     }
 }, [ panelOpen ])
 
+
+useGSAP(function () {
+  if (vehiclePanel) {
+      gsap.to(vehiclePanelRef.current, {
+          transform: 'translateY(0)'
+      })
+  } else {
+      gsap.to(vehiclePanelRef.current, {
+          transform: 'translateY(100%)'
+      })
+  }
+}, [ vehiclePanel ])
+
+useGSAP(function () {
+  if (confirmRidePanel) {
+      gsap.to(confirmRidePanelRef.current, {
+          transform: 'translateY(0)'
+      })
+  } else {
+      gsap.to(confirmRidePanelRef.current, {
+          transform: 'translateY(100%)'
+      })
+  }
+}, [ confirmRidePanel ])
+
   return (
     <div className='h-screen relative overflow-hidden'>
     <img className='w-16 absolute left-5 top-5' src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt="" />
@@ -58,54 +87,25 @@ const panelCloseRef = useRef(null)
         <div className="line absolute h-16 w-1 top-1/2 top-[45%] left-10 bg-gray-900 rounded-full "></div>
         <input
          onClick={()=>{
-          setPanelOpen
+          setPanelOpen(true)
         }}
          type="text" placeholder='Add a Pickup Location' value={pickup} onChange={(e) => setPickup(e.target.value)} className='bg-[#eee] px-12 py-2 text-lg rounded-lg w-full'/>
         <input
         onClick={()=>{
-          setPanelOpen
+          setPanelOpen(true)
         }}
         type="text"  placeholder='Add a Destination' value={destination} onChange={(e) => setDestination(e.target.value)} className='bg-[#eee] px-12 py-2 text-lg rounded-lg w-full  mt-3'/>
       </form>
     </div>
     <div ref={panelRef} className=' bg-white h-0'>
-<LocationSearchPanel/>
+<LocationSearchPanel setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel}/>
     </div>
-</div>
-<div className='fixed w-full z-10 bottom-0 bg-white px-3 py-6'>
-  <h3 className='text-2xl font-semibold mb-5'>Choose a Vehicle</h3>
-  <div className='flex border-2 border-black mb-2 rounded-xl w-full p-3  items-center justify-between'>
-  <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,h_368,w_552/v1548646918/assets/e9/2eeb8f-3764-4e26-8b17-5905a75e7e85/original/2.png" alt="" />
- 
-  <div className=' w-1/2'>
-    <h4 className='font-medium text-base'> UberGo <span><i classname='ri-user-3-fill' ></i>4</span></h4>
-      <h5 className='font-medium text-sm'>2 min away</h5>
-      <p className='font-medium text-xs text-gray-600'>Affordable, compact rides</p>
-  </div>
-  <h2 className='text-2xl font-semibold'>r193.20</h2>
-  </div>
-  <div className='flex border-2 border-black mb-2 rounded-xl w-full p-3  items-center justify-between'>
-  <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,h_368,w_552/v1548646918/assets/e9/2eeb8f-3764-4e26-8b17-5905a75e7e85/original/2.png" alt="" />
- 
-  <div className='ml-2 w-1/2'>
-    <h4 className='font-medium text-base'> Uber<span><i classname='ri-user-3-fill' ></i>4</span></h4>
-      <h5 className='font-medium text-sm'>2 min away</h5>
-      <p className='font-medium text-xs text-gray-600'>Affordable, compact rides</p>
-  </div>
-  <h2 className='text-2xl font-semibold'>r193.20</h2>
-  </div>
-  <div className='flex border-2 border-black mb-2 rounded-xl w-full p-3  items-center justify-between'>
-  <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,h_368,w_552/v1548646918/assets/e9/2eeb8f-3764-4e26-8b17-5905a75e7e85/original/2.png" alt="" />
- 
-  <div className=' w-1/2'>
-    <h4 className='font-medium text-base'> Moto <span><i classname='ri-user-3-fill' ></i>4</span></h4>
-      <h5 className='font-medium text-sm'>2 min away</h5>
-      <p className='font-medium text-xs text-gray-600'>Affordable, compact rides</p>
-  </div>
-  <h2 className='text-2xl font-semibold'>r193.20</h2>
-  </div>
-</div>
-    </div>
+</div>   
+ <div ref={vehiclePanelRef} className='fixed w-full z-10 bottom-0 bg-white translate-y-full px-3 py-10 pt-12'>
+  <VehiclePanel setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel}/></div>
+  <div ref={confirmRidePanelRef} className='fixed w-full z-10 bottom-0 bg-white translate-y-full px-3 py-6 pt-12'>
+  <ConfirmRide />
+     </div></div>
    
     )
 }
